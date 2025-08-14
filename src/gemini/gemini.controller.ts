@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express'
-import { GeminiService } from './gemini.service';
+import { GeminiService } from './services/gemini.service';
 import { basicPromptDto } from './dtos/basic-promts.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ChatPromptDto } from './dtos/chat-prompt.dto';
@@ -46,11 +46,13 @@ export class GeminiController {
 
     void this.outputStreamResponce(res, stream)
   }
+  
 
+  /*controlador del chat stream*/ 
   @Post('chat-stream')
   @UseInterceptors(FilesInterceptor('files'))
   async chatStream( 
-    @Body(  ) chatPromptDto: ChatPromptDto,
+    @Body( ) chatPromptDto: ChatPromptDto,
     @Res() res: Response,
     @UploadedFiles() files: Array<Express.Multer.File>
   ){
@@ -74,6 +76,35 @@ export class GeminiController {
     this.geminiService.saveMessage( chatPromptDto.chatId,  geminiMessage)
   }
 
+  /*controlador del chat stream con contexto del negocio*/ 
+  @Post('chat-stream-with-pdf-document-context')
+  @UseInterceptors(FilesInterceptor('files'))
+  async chatStreamWithContext( 
+    @Body( ) chatPromptDto: ChatPromptDto,
+    @Res() res: Response,
+    @UploadedFiles() files: Array<Express.Multer.File>
+  ){
+
+    chatPromptDto.files = files;
+
+    const stream = await this.geminiService.chatStreamWithPdfDocumentContext(chatPromptDto); 
+
+    const data = await this.outputStreamResponce(res, stream);
+
+    const userMessage = {
+      role: 'user',
+      parts: [{ text: chatPromptDto.prompt }]
+    }
+    const geminiMessage = {
+      role: 'model',
+      parts: [{ text: data }]
+    }
+
+    this.geminiService.saveMessage( chatPromptDto.chatId,  userMessage)
+    this.geminiService.saveMessage( chatPromptDto.chatId,  geminiMessage)
+  }
+
+  /* obtener el historial del chat por id */
   @Get('chat-history/:chatId')
   getChatHistory( @Param('chatId') chatId: string){
     return this.geminiService.getChatHistory( chatId ).map( message => ({

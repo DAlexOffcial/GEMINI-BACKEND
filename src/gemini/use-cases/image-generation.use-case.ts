@@ -1,8 +1,7 @@
-import { Content, ContentListUnion, createPartFromUri, GoogleGenAI } from "@google/genai";
-import { ChatPromptDto } from "../dtos/chat-prompt.dto";
+import { ContentListUnion, createPartFromUri, GoogleGenAI } from "@google/genai";
 import { geminiUploadFiles } from "../helpers/gemini-upload-file";
 import { ImageGenerationDto } from "../dtos/image-generation.dto";
-import { v4 } from "uuid";
+
 
 interface Options {
   model?: string;

@@ -29,9 +29,9 @@ export const geminiUploadFiles = async (
       const type = file.mimetype.includes('application/octet-stream')
         ? fileMimeType
         : file.mimetype;
-
+      
       return ai.files.upload({
-        file: new Blob([file.buffer], {
+        file: new Blob([Buffer.from(file.buffer)], {
           type,
         }),
       });
