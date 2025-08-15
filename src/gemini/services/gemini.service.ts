@@ -9,6 +9,7 @@ import { ImageGenerationDto } from '../dtos/image-generation.dto';
 import { imageGenerationUseCase } from '../use-cases/image-generation.use-case';
 import { chatPromptStreamWithContextUseCase } from '../use-cases/chat-prompt-stream-with-context.use-case';
 import { documentsUnderstending } from '../use-cases/document-understanding';
+import { ChatPromptPdfDto } from '../dtos/chat-prompt-pdf.dto';
 
 
 @Injectable()
@@ -37,7 +38,7 @@ export class GeminiService {
     }
 
     /*stream chat with cache history and suport context*/
-    async chatStreamWithPdfDocumentContext(chatPromptDto: ChatPromptDto) {
+    async chatStreamWithPdfDocumentContext(chatPromptDto: ChatPromptPdfDto) {
         const chatHistory = this.getChatHistory(chatPromptDto.chatId)
 
         // Generar contexto de la empresa a partir de los archivos

@@ -6,6 +6,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ChatPromptDto } from './dtos/chat-prompt.dto';
 import { GenerateContentResponse } from '@google/genai';
 import { ImageGenerationDto } from './dtos/image-generation.dto';
+import { ChatPromptPdfDto } from './dtos/chat-prompt-pdf.dto';
 
 @Controller('gemini')
 export class GeminiController {
@@ -80,7 +81,7 @@ export class GeminiController {
   @Post('chat-stream-with-pdf-document-context')
   @UseInterceptors(FilesInterceptor('files'))
   async chatStreamWithContext( 
-    @Body( ) chatPromptDto: ChatPromptDto,
+    @Body( ) chatPromptDto: ChatPromptPdfDto,
     @Res() res: Response,
     @UploadedFiles() files: Array<Express.Multer.File>
   ){
